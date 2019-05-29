@@ -1,26 +1,37 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import { bindActionCreators } from 'redux';
+import store from './store';
+import { moviesActions } from './app/movies/duck';
+import { seriesActions } from './app/series/duck';
+import MoviesContainer from './app/movies/components/MoviesContainer';
+import MoviesForm from './app/movies/components/MoviesForm';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+store.dispatch(moviesActions.add('Captain America'));
+store.dispatch(moviesActions.incrementLastElement());
+store.dispatch(seriesActions.add('Game of Thrones'));
+store.dispatch(seriesActions.add('Sherlock'));
+store.dispatch(moviesActions.incrementLastElement());
+
+//reduxowy kreator akcji, mozna dodac wiecej zrobionych funkcji w obiekcie podawanym jako 1 parametr
+const addMovie2 = bindActionCreators({ add: moviesActions.add }, store.dispatch);
+addMovie2.add('Forrest Gump');
+
+window.store = store;
+
+class App extends React.Component {
+   onSubmit = e => {
+      console.log('submit');
+   };
+
+   render() {
+      return (
+         <div className="App">
+            <MoviesContainer />
+            <MoviesForm />
+         </div>
+      );
+   }
 }
 
 export default App;
